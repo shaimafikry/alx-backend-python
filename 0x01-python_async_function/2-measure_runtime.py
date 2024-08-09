@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+  calculate the time of the async
+  """
 import asyncio
 import time
 wait_n = __import__('1-concurrent_coroutines').wait_n
@@ -11,6 +14,14 @@ wait_n = __import__('1-concurrent_coroutines').wait_n
 # Your function should return a float.
 # Use the time module to measure an approximate elapsed time.
 def measure_time(n: int, max_delay: int) -> float:
+    """clculate the time of async func
+    Args:
+        n (int): range of loop
+        max_delay (int): range of delay
+
+    Returns:
+        float: time spent
+    """
     tme1 = time.time()
     asyncio.run(wait_n(n, max_delay))  # Run wait_n in an event loop
     tme2 = time.time()
