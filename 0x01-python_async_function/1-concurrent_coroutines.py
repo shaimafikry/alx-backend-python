@@ -30,6 +30,8 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     for task in asyncio.as_completed(list_of_random):
         delay = await task
         results.append(delay)
+    return results
+
     # list_of_random = [wait_random(max_delay) for i in range(n)]
     # to get all the results at one list at once
     # results = await asyncio.gather(*list_of_random)
@@ -44,4 +46,3 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     #         hold = results[i]
     #         results[i] = temp
     #         temp = hold
-    return results
