@@ -23,17 +23,25 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     Returns:
         List[float]: _description_
     """
-    list_of_random = [wait_random(max_delay) for i in range(n)]
+    list_of_random = [asyncio.create_task(wait_random(max_delay))
+                      for i in range(n)]
     # to get all the results at one list at once
-    results = await asyncio.gather(*list_of_random)
-    results.sort()
+    results: List[float] = []
+    for task in asyncio.as_completed(list_of_random):
+        delay = await task
+        results.append(delay)
+    # list_of_random = [wait_random(max_delay) for i in range(n)]
+    # to get all the results at one list at once
+    # results = await asyncio.gather(*list_of_random)
+    # results.sort()
     # for i in range(n):
     #     delay: float = await wait_random(max_delay)
     #     list_of_random.append(delay)
-    # temp = list_of_random[0]
+    # print (results)
+    # temp = results[0]
     # for i in range(n):
-    #     if temp < list_of_random[i]:
-    #         hold = list_of_random[i]
-    #         list_of_random[i] = temp
+    #     if temp > results[i]:
+    #         hold = results[i]
+    #         results[i] = temp
     #         temp = hold
     return results
