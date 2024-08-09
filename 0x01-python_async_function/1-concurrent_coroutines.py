@@ -24,7 +24,7 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
         List[float]: _description_
     """
     list_of_random = [asyncio.create_task(wait_random(max_delay))
-                      for i in range(n)]
+                      for _ in range(n)]
     # to get all the results at one list at once
     results: List[float] = []
     for task in asyncio.as_completed(list_of_random):
