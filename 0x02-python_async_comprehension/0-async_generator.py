@@ -11,11 +11,11 @@ import asyncio
 from typing import AsyncGenerator
 
 
-async def async_generator() -> AsyncGenerator[int, None]:
+async def async_generator() -> AsyncGenerator[int, float, None]:
     """loop through async
     Yields:
         int: random value
     """
-    for i in range(10):
+    for _ in range(10):
         await asyncio.sleep(1)
         yield random.randint(0, 10)
