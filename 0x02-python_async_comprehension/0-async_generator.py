@@ -11,7 +11,7 @@ import asyncio
 from typing import AsyncGenerator
 
 
-async def async_generator() -> AsyncGenerator[int, float, None]:
+async def async_generator() -> AsyncGenerator[int, float]:
     """loop through async
     Yields:
         int: random value
