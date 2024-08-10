@@ -23,26 +23,32 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     Returns:
         List[float]: _description_
     """
-    list_of_random = [asyncio.create_task(wait_random(max_delay))
-                      for _ in range(n)]
-    # to get all the results at one list at once
-    results: List[float] = []
-    for task in asyncio.as_completed(list_of_random):
-        delay = await task
-        results.append(delay)
-    return results
+    # list_of_random = [asyncio.create_task(wait_random(max_delay))
+    #                   for _ in range(n)]
+    # # to get all the results at one list at once
+    # results: List[float] = []
+    # as_completed doesnt return orderd list, it return first to finish
+    # it may have a large delay but finish first due to other factors
+    # for task in asyncio.as_completed(list_of_random):
+    #     delay = await task
+    #     results.append(delay)
+    # return results
 
-    # list_of_random = [wait_random(max_delay) for i in range(n)]
+    list_of_random = [wait_random(max_delay) for _ in range(n)]
     # to get all the results at one list at once
-    # results = await asyncio.gather(*list_of_random)
+    # if i print in this position i will get a list of refrences to objects
+    # print (list_of_random)
+    results = await asyncio.gather(*list_of_random)
+    # reuslts are randomly sorted
+    # print(results)
     # results.sort()
-    # for i in range(n):
-    #     delay: float = await wait_random(max_delay)
-    #     list_of_random.append(delay)
-    # print (results)
-    # temp = results[0]
-    # for i in range(n):
-    #     if temp > results[i]:
-    #         hold = results[i]
-    #         results[i] = temp
-    #         temp = hold
+    # insertion sort logic
+    for i in range(1, n):
+        key = results[i]
+        j = i - 1
+        while j >= 0 and key < results[j]:
+            results[j + 1] = results[j]
+            j -= 1
+        results[j + 1] = key
+    print(results)
+    return results
