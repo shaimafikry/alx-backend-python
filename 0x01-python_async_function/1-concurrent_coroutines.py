@@ -43,12 +43,12 @@ async def wait_n(n: int, max_delay: int) -> List[float]:
     # print(results)
     # results.sort()
     # insertion sort logic
-    for i in range(1, n):
-        key = results[i]
-        j = i - 1
-        while j >= 0 and key < results[j]:
-            results[j + 1] = results[j]
-            j -= 1
-        results[j + 1] = key
+    # for i in range(1, n):
+    #     key = results[i]
+    #     j = i - 1
+    #     while j >= 0 and key < results[j]:
+    #         results[j + 1] = results[j]
+    #         j -= 1
+    #     results[j + 1] = key
     # print(results)
-    return results
+    return sorted(results)
