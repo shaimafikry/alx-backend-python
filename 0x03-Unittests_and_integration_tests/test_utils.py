@@ -12,17 +12,23 @@ class TestAccessNestedMap(unittest.TestCase):
         ({"a": {"b": 2}}, ("a",), {"b": 2}),
         ({"a": {"b": 2}}, ("a", "b"), 2)
     ])
-    def test_access_nested_map(self,nested_map, path, output):
+    def test_access_nested_map(self, nested_map, path, output):
         """ test the func"""
-        self.assertEqual(access_nested_map (nested_map, path), output)
+        self.assertEqual(access_nested_map(nested_map, path), output)
 
     @parameterized.expand([
-        ({}, ("a",), KeyError),
-        ({"a": 1}, ("a", "b"), KeyError)
+        ({}, ("a",)),
+        ({"a": 1}, ("a", "b"))
     ])
-    def test_access_nested_map_exception(self,nested_map, path, output):
+    def test_access_nested_map_exception(self, nested_map, path):
         """ test the func"""
-        self.assertRaises(access_nested_map (nested_map, path), KeyError)
+        # cm = context manager
+        with self.assertRaises(KeyError) as cm:
+            test = access_nested_map(nested_map, path)
+            # key error 'b' -> path[-1]  == 'b'
+            # cm.exception is the messageof the error
+            self.assertEqual(cm.exception, path[-1])
+
 
 if __name__ == '__main__':
     unittest.main()
