@@ -2,7 +2,8 @@
 """ testing"""
 import unittest
 from parameterized import parameterized
-from utils import access_nested_map
+from utils import access_nested_map, get_json
+from unittest.mock import Mock, patch
 
 
 class TestAccessNestedMap(unittest.TestCase):
@@ -28,6 +29,23 @@ class TestAccessNestedMap(unittest.TestCase):
             # key error 'b' -> path[-1]  == 'b'
             # cm.exception is the messageof the error
             self.assertEqual(cm.exception, path[-1])
+
+
+class TestGetJson(unittest.TestCase):
+    """ testing mocing"""
+    @parameterized.expand([
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False})
+    ])
+    def test_get_json(self, input, output):
+        """ mocing test"""
+        # applay patch on any call to requests.get
+        with patch('requests.get') as res:
+            # add the mocked output
+            res.return_value.json.return_value = output
+            self.assertEqual(get_json(input), output)
+            # to make sure its called once
+            res.assert_called_once_with(input)
 
 
 if __name__ == '__main__':
