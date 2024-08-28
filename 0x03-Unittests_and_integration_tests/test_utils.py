@@ -47,6 +47,7 @@ class TestGetJson(unittest.TestCase):
             # to make sure its called once
             res.assert_called_once_with(input)
 
+
 class TestMemoize(unittest.TestCase):
     """ test memoize"""
     def test_memoize(self):
