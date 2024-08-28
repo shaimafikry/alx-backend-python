@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Generic utilities for github org client.
 """
-from unittest.mock import Mock, patch
-
 import requests
 from functools import wraps
 from typing import (
@@ -12,16 +10,53 @@ from typing import (
     Dict,
     Callable,
 )
+# import random
+# from unittest.mock import Mock, patch
+ 
+ 
+# days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri' , 'sat']
+ 
+# # random.choice = Mock(return_value='wed')
+# print(random.choice(days))
+
+# #using patch
+# with patch('random.choice', return_value='wed'):
+#     print(random.choice(days))
 
 
-def get_json(url: str) -> Dict:
-    """Get JSON from remote URL.
+def memoize(fn: Callable) -> Callable:
+    """Decorator to memoize a method.
+    Example
+    -------
+    class MyClass:
+        @memoize
+        def a_method(self):
+            print("a_method called")
+            return 42
+    >>> my_object = MyClass()
+    >>> my_object.a_method
+    a_method called
+    42
+    >>> my_object.a_method
+    42
     """
-    response = requests.get(url)
-    return response.json()
+    attr_name = "_{}".format(fn.__name__)
+
+    @wraps(fn)
+    def memoized(self):
+        """"memoized wraps"""
+        if not hasattr(self, attr_name):
+            setattr(self, attr_name, fn(self))
+        return getattr(self, attr_name)
+
+    return property(memoized)
 
 
+class more:
+  
+    @memoize()
+    def test(self):
+        print ('wow')
 
-
-with patch.object(Mock, get_json, retunr_value="none ter"):
-    print(get_json('wwwd'))
+m = more()
+m.test
