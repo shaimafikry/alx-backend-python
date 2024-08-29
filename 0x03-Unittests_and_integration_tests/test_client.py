@@ -42,10 +42,11 @@ class TestGithubOrgClient(unittest.TestCase):
         # Define a mock return value for the get_json calls
         mock_repos = [{"name": "repo1", "license": {"key": "lic1"}}]
         mock_get_json.return_value = mock_repos
-
+        url = "https://api.github.com/orgs/google/repos"
         # Mock the _public_repos_url property
-        with patch.object(GithubOrgClient, '_public_repos_url', new_callable=PropertyMock) as mock_repos_url:
-            mock_repos_url.return_value = "https://api.github.com/orgs/google/repos"
+        with patch.object(GithubOrgClient, '_public_repos_url',
+                          new_callable=PropertyMock) as mck_r_url:
+            mck_r_url.return_value = url
 
             # Create an instance of the client
             client = GithubOrgClient('google')
@@ -58,11 +59,10 @@ class TestGithubOrgClient(unittest.TestCase):
             self.assertEqual(result, expected_repos)
 
             # Assert that get_json was called once with the correct URL
-            mock_get_json.assert_called_once_with("https://api.github.com/orgs/google/repos")
+            mock_get_json.assert_called_once_with(url)
 
             # Assert that the _public_repos_url was accessed once
-            mock_repos_url.assert_called_once()
-
+            mck_r_url.assert_called_once()
 
 
 if __name__ == '__main__':
