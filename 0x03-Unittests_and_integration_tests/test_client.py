@@ -79,6 +79,7 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(GithubOrgClient.has_license
                          (repo, license_key), output)
 
+
 @parameterized_class([
     {'org_payload': org_payload,
      'repos_payload': repos_payload,
@@ -92,9 +93,12 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """ class method to setup for the tests"""
         cls.get_patcher = patch('requests.get')
         # starts the patcher and assigns the mock object to mock_get
-        cls.mock_get  = cls.get_patcher.start()
-        # side_effect used when there is more than one value returned on different calls
+        cls.mock_get = cls.get_patcher.start()
+        # side_effect used when there is more than one
+        # value returned on different calls
+
         def mock_get_side_effect(url, *args, **kwargs):
+            """ mock side effects"""
             if url.endswith('/orgs/some-org'):
                 return unittest.mock.Mock(json=lambda: cls.org_payload)
             elif url.endswith('/orgs/some-org/repos'):
@@ -103,14 +107,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 return unittest.mock.Mock(json=lambda: cls.apache2_repos)
             else:
                 raise ValueError("Unexpected URL")
-
-
         cls.mock_get.side_effect = mock_get_side_effect
 
     @classmethod
     def tearDownClass(cls):
         """ delete all after finishing"""
-        # cls.get_patcher.stop() stops the patcher, restoring requests.get to its original state.
+        # cls.get_patcher.stop() stops the patcher,
+        # restoring requests.get to its original state.
         cls.get_patcher.stop()
 
     def test_public_repos(self):
