@@ -80,14 +80,15 @@ class TestGithubOrgClient(unittest.TestCase):
                          (repo, license_key), output)
 
 
-@parameterized_class([
+
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ test integration"""
+   @parameterized_class([
     {'org_payload': org_payload,
      'repos_payload': repos_payload,
      'expected_repos': expected_repos,
      'apache2_repos': apache2_repos}
 ])
-class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """ test integration"""
     @classmethod
     def setUpClass(cls):
         """ class method to setup for the tests"""
