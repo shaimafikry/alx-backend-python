@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """ testing"""
 import unittest
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from unittest.mock import Mock, patch, PropertyMock
+from fixtures import (
+      org_payload,
+      repos_payload,
+      expected_repos,
+      apache2_repos
+)
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -72,6 +78,46 @@ class TestGithubOrgClient(unittest.TestCase):
         """ test has_licence"""
         self.assertEqual(GithubOrgClient.has_license
                          (repo, license_key), output)
+
+@parameterized_class([
+    {'org_payload': org_payload,
+     'repos_payload': repos_payload,
+     'expected_repos': expected_repos,
+     'apache2_repos': apache2_repos}
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """ test integration"""
+    @classmethod
+    def setUpClass(cls):
+        """ class method to setup for the tests"""
+        cls.get_patcher = patch('requests.get')
+        # starts the patcher and assigns the mock object to mock_get
+        cls.mock_get  = cls.get_patcher.start()
+        # side_effect used when there is more than one value returned on different calls
+        def mock_get_side_effect(url):
+            """Define side_effect for the mock to return different payloads based on the URL"""
+            if url.endswith('orgs/google'):
+                return Mock(json=lambda: cls.org_payload)
+            elif url.endswith('orgs/google/repos'):
+                return Mock(json=lambda: cls.repos_payload)
+            elif url.endswith('orgs/apache/repos'):
+                return Mock(json=lambda: cls.apache2_repos)
+            else:
+                raise ValueError(f"Unexpected URL: {url}")
+
+        cls.mock_get.side_effect = mock_get_side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        """ delete all after finishing"""
+        # cls.get_patcher.stop() stops the patcher, restoring requests.get to its original state.
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """test methods"""
+        client = GithubOrgClient('google')
+        result = client.public_repos()
+        self.assertEquals(result, self.expected_repos)
 
 
 if __name__ == '__main__':
