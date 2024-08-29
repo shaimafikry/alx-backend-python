@@ -94,16 +94,16 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         # starts the patcher and assigns the mock object to mock_get
         cls.mock_get  = cls.get_patcher.start()
         # side_effect used when there is more than one value returned on different calls
-        def mock_get_side_effect(url):
-            """Define side_effect for the mock to return different payloads based on the URL"""
-            if url.endswith('orgs/google'):
-                return Mock(json=lambda: cls.org_payload)
-            elif url.endswith('orgs/google/repos'):
-                return Mock(json=lambda: cls.repos_payload)
-            elif url.endswith('orgs/apache/repos'):
-                return Mock(json=lambda: cls.apache2_repos)
+        def mock_get_side_effect(url, *args, **kwargs):
+            if url.endswith('/orgs/some-org'):
+                return unittest.mock.Mock(json=lambda: cls.org_payload)
+            elif url.endswith('/orgs/some-org/repos'):
+                return unittest.mock.Mock(json=lambda: cls.repos_payload)
+            elif url.endswith('/repos/some-org/some-repo'):
+                return unittest.mock.Mock(json=lambda: cls.apache2_repos)
             else:
-                raise ValueError(f"Unexpected URL: {url}")
+                raise ValueError("Unexpected URL")
+
 
         cls.mock_get.side_effect = mock_get_side_effect
 
