@@ -80,7 +80,6 @@ class TestGithubOrgClient(unittest.TestCase):
                          (repo, license_key), output)
 
 
-
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """ test integration"""
    @parameterized_class([
