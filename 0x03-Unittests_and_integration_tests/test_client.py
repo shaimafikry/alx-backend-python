@@ -3,7 +3,7 @@
 import unittest
 from parameterized import parameterized
 from client import GithubOrgClient
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, PropertyMock
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -22,6 +22,19 @@ class TestGithubOrgClient(unittest.TestCase):
         # check if it was called more than once
         mock_obj.assert_called_once_with(
           f"https://api.github.com/orgs/{org_name}")
+
+    @patch.object(GithubOrgClient, 'org', new_callable=PropertyMock)
+    def test_public_repos_url(self, property_mocked_obj):
+        """ test that a method calls a property"""
+        # make the default value
+        property_mocked_obj.return_value = {
+            "repos_url": "https://api.github.com/orgs/google/repos"
+        }
+        # create new instance
+        my_test = GithubOrgClient('google')
+        # call the proberty
+        my_res = my_test._public_repos_url
+        self.assertEqual(my_res, "https://api.github.com/orgs/google/repos")
 
 
 if __name__ == '__main__':
